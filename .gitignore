@@ -1,0 +1,50 @@
+# Python and tools
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+.DS_Store
+
+# Local settings and credentials
+.env
+.env.*
+!.env.example
+.aws/
+.idea/
+.vscode/
+*.local
+
+# Audio, generated results and model caches (never commit personal recordings)
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.ogg
+*.opus
+*.aiff
+*.aif
+*.mp4
+*.webm
+*.wma
+*.caf
+recordings/
+audio/
+transcripts/
+outputs/
+*.srt
+*.vtt
+models/
+.cache/
+.gradio/
+gradio_cached_examples/
+*.safetensors
+*.npz
+
+# uv.lock is intentionally tracked.
