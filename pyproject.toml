@@ -1,34 +1,20 @@
+
 [project]
-name = "speech-lab"
+name = "ai-playground"
 version = "0.1.0"
-description = "A local-first speech recognition and accuracy playground for Apple Silicon"
-readme = "README.md"
-authors = [
-    { name = "Nadhim Orfali", email = "nadhim.orfali@gmail.com" }
-]
-requires-python = ">=3.12,<3.14"
-license = "MIT"
-keywords = ["speech-recognition", "whisper", "mlx", "accessibility"]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Programming Language :: Python :: 3.12",
-    "Operating System :: MacOS :: MacOS X",
-]
-dependencies = [
-    "gradio>=6,<7",
-    "jiwer>=4,<5",
-    "mlx-whisper>=0.4.3,<0.5; sys_platform == 'darwin' and platform_machine == 'arm64'",
-]
+requires-python = ">=3.12,<3.13"
+dependencies = []
 
 [dependency-groups]
-dev = ["pytest>=8,<10", "ruff>=0.14,<1"]
+dev = [
+    "ruff",
+]
 
-[project.scripts]
-speech-lab = "speech_lab.cli:main"
+[tool.uv]
+package = false
 
-[build-system]
-requires = ["uv_build>=0.13.6,<0.14.0"]
-build-backend = "uv_build"
+[tool.uv.workspace]
+members = ["speech"]
 
 [tool.ruff]
 target-version = "py312"
@@ -36,6 +22,3 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]

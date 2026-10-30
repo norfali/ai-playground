@@ -163,7 +163,7 @@ def build_app() -> gr.Blocks:
                 '<div class="wordmark"><span class="sound-mark" aria-hidden="true">'
                 "<i></i><i></i><i></i><i></i><i></i></span>"
                 '<h1>Speech<span class="title-accent">Lab</span></h1></div>'
-                '<a href="https://github.com/norfali/speech-lab">View on GitHub</a>'
+                '<a href="https://github.com/norfali/ai-playground/speech">View on GitHub</a>'
                 '</header><div class="intro"><p class="eyebrow">LOCAL SPEECH PLAYGROUND</p>'
                 '<p class="tagline">A closer listen.</p>'
                 "<p>Turn audio into text, then explore what Whisper heard.</p></div>",

@@ -189,7 +189,7 @@ def test_build_app():
         for c in components
         if c["props"].get("elem_classes") == ["project-intro"]
     )
-    assert '<a href="https://github.com/norfali/speech-lab">View on GitHub</a>' in header
+    assert '<a href="https://github.com/norfali/ai-playground/speech">View on GitHub</a>' in header
     footer = next(
         c["props"]["value"]
         for c in components

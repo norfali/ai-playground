@@ -1,10 +1,13 @@
-# Python and tools
+
+# Python and tooling
 .venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
 .coverage
+.coverage.*
 htmlcov/
 build/
 dist/
@@ -20,31 +23,12 @@ dist/
 .vscode/
 *.local
 
-# Audio, generated results and model caches (never commit personal recordings)
-*.wav
-*.mp3
-*.m4a
-*.aac
-*.flac
-*.ogg
-*.opus
-*.aiff
-*.aif
-*.mp4
-*.webm
-*.wma
-*.caf
-recordings/
-audio/
-transcripts/
-outputs/
-*.srt
-*.vtt
+# AI models and caches
 models/
 .cache/
-.gradio/
-gradio_cached_examples/
 *.safetensors
+*.gguf
+*.onnx
 *.npz
 
-# uv.lock is intentionally tracked.
+# uv.lock is intentionally tracked for each project.

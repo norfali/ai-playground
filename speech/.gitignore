@@ -1,0 +1,29 @@
+
+# Audio recordings
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.ogg
+*.opus
+*.aiff
+*.aif
+*.mp4
+*.webm
+*.wma
+*.caf
+
+# Transcripts and subtitles
+transcripts/
+*.srt
+*.vtt
+
+# Local audio data and generated results
+recordings/
+audio/
+outputs/
+
+# Gradio-generated files
+.gradio/
+gradio_cached_examples/
