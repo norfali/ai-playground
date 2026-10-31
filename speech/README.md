@@ -13,7 +13,6 @@ You'll need:
 - An Apple Silicon Mac running macOS.
 - Python 3.12 and [uv](https://docs.astral.sh/uv/).
 - [FFmpeg](https://ffmpeg.org/) for reading audio files.
-- An internet connection for installation and the first download of each model.
 
 Install FFmpeg with Homebrew, if you use it:
 
