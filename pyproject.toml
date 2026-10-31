@@ -2,19 +2,31 @@
 [project]
 name = "ai-playground"
 version = "0.1.0"
-requires-python = ">=3.12,<3.13"
-dependencies = []
+description = "A collection of local-first AI experiments and engineering playgrounds"
+readme = "README.md"
+authors = [
+    { name = "Nadhim Orfali" }
+]
+requires-python = ">=3.12,<3.14"
+license = "MIT"
+keywords = ["ai", "machine-learning", "llm", "rag", "experiments"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+]
 
 [dependency-groups]
 dev = [
-    "ruff",
+    "ruff>=0.14,<1",
 ]
 
 [tool.uv]
 package = false
 
 [tool.uv.workspace]
-members = ["speech"]
+members = ["speech", "rag"]
 
 [tool.ruff]
 target-version = "py312"
@@ -22,3 +34,6 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.pyright]
+extraPaths = ["rag/src", "speech/src"]

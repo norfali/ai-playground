@@ -32,3 +32,11 @@ models/
 *.npz
 
 # uv.lock is intentionally tracked for each project.
+
+# RagLab uploads, temporary documents and generated collections
+rag/uploads/
+rag/documents/
+rag/indexes/
+rag/outputs/
+rag/.gradio/
+rag/gradio_cached_examples/
