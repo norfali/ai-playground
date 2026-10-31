@@ -1,0 +1,172 @@
+/* SpeechLab's system typography, teal accents and mode-aware Gradio surfaces. */
+#rag-lab {
+    max-width: 78rem;
+    margin-inline: auto;
+    padding: var(--spacing-lg) clamp(0px, 2vw, 1rem);
+    gap: var(--spacing-md);
+    color: var(--body-text-color);
+    font-family: var(--font);
+}
+#rag-lab :is(button, input, textarea, a, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--link-text-color) !important;
+    outline-offset: 3px !important;
+}
+#rag-lab .project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color-primary);
+}
+#rag-lab .project-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: -0.06em;
+}
+#rag-lab .title-accent { color: var(--link-text-color); }
+#rag-lab .intro p { color: var(--body-text-color-subdued); }
+#rag-lab .project-header a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 2.75rem;
+    color: var(--link-text-color);
+    font-size: var(--text-sm);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+#rag-lab .project-header a:hover { color: var(--link-text-color-hover); }
+#rag-lab .intro { padding-block: 1.5rem 0.5rem; }
+#rag-lab .intro .tagline {
+    margin: 0 0 0.5rem;
+    color: var(--body-text-color);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 650;
+    letter-spacing: -0.045em;
+    line-height: 1.2;
+}
+#rag-lab .section-heading h2 {
+    margin: 0;
+    padding-inline-start: 0.5rem;
+    border-inline-start: 3px solid var(--link-text-color);
+    font-size: 1.125rem;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+}
+#rag-lab .index-controls {
+    padding: 1rem;
+    gap: 0.75rem;
+    border: 1px solid var(--border-color-primary);
+    border-radius: var(--block-radius);
+    background: var(--background-fill-secondary);
+}
+#rag-lab .index-actions { align-items: center; }
+#rag-lab .search-controls { align-items: end; }
+#rag-lab .retrieval-workspace { flex-wrap: nowrap; gap: 1rem; }
+#rag-lab .workspace-panel { min-width: 0; gap: 0.75rem; }
+#rag-lab .workspace-content {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+#rag-lab .panel-scroll {
+    box-sizing: border-box;
+    height: 600px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    overflow-wrap: anywhere;
+    padding: 1rem;
+    border: 1px solid var(--border-color-primary);
+    border-radius: var(--block-radius);
+    background: var(--background-fill-secondary);
+    color: var(--body-text-color);
+    font-family: var(--font);
+    line-height: 1.6;
+}
+#rag-lab .panel-scroll h3 {
+    margin: 1.25rem 0 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+#rag-lab .panel-scroll h3:first-child { margin-top: 0; }
+#rag-lab .panel-scroll p { margin: 0 0 0.75rem; }
+#rag-lab .passage-card + .passage-card {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color-primary);
+}
+#rag-lab .passage-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font: inherit;
+}
+#rag-lab :is(.passage-meta, .passage-tokens) {
+    color: var(--body-text-color-subdued);
+    font-size: var(--text-sm);
+}
+#rag-lab :is(.passage-meta code, .score, .insight-measurements dd) {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+#rag-lab .token-description {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+#rag-lab .truncation-warning {
+    padding-inline-start: 0.6rem;
+    border-inline-start: 3px solid var(--link-text-color);
+    font-size: var(--text-sm);
+}
+#rag-lab .insight-measurements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr));
+    gap: 0.75rem;
+    margin: 0 0 1rem;
+}
+#rag-lab .insight-measurements > div {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color-primary);
+    border-radius: var(--block-radius);
+    background: var(--body-background-fill);
+}
+#rag-lab .insight-measurements dt small {
+    display: block;
+    font-size: inherit;
+}
+#rag-lab .insight-measurements dt {
+    color: var(--body-text-color-subdued);
+    font-size: var(--text-sm);
+}
+#rag-lab .insight-measurements dd {
+    margin: 0.25rem 0 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+#rag-lab .index-diagnostics {
+    margin-top: 1.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color-primary);
+    font-size: var(--text-sm);
+}
+#rag-lab .index-diagnostics summary {
+    cursor: pointer;
+    color: var(--link-text-color);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+@media (max-width: 800px) {
+    #rag-lab .retrieval-workspace { flex-direction: column; }
+    #rag-lab .panel-scroll {
+        height: auto;
+        overflow-y: visible;
+        scrollbar-gutter: auto;
+    }
+}

@@ -1,0 +1,50 @@
+
+[project]
+name = "rag-lab"
+version = "0.1.0"
+description = "A local-first playground for document retrieval fundamentals"
+readme = "README.md"
+authors = [
+    { name = "Nadhim Orfali" }
+]
+requires-python = ">=3.12,<3.14"
+license = "MIT"
+keywords = ["rag", "retrieval", "embeddings", "semantic-search", "chunking"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "gradio>=6,<7",
+    "sentence-transformers>=5,<6",
+    "numpy>=2,<3",
+    "pymupdf>=1.26,<2",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+rag-lab = "rag_lab.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# PyMuPDF's macOS SWIG bindings emit these harmless upstream warnings.
+# https://github.com/pymupdf/PyMuPDF/issues/5190
+filterwarnings = [
+    "ignore:^builtin type SwigPyPacked has no __module__ attribute$:DeprecationWarning",
+    "ignore:^builtin type SwigPyObject has no __module__ attribute$:DeprecationWarning",
+    "ignore:^builtin type swigvarlink has no __module__ attribute$:DeprecationWarning",
+]
