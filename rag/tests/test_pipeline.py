@@ -42,6 +42,19 @@ def test_failed_replacement_preserves_collection(files):
     assert pipeline.document_count == 2
 
 
+def test_query_accepts_array_like_embeddings_without_indexing(files):
+    class ArrayLikeEmbeddings:
+        def __array__(self, dtype=None, copy=None):
+            return np.array([[1, 0]], dtype=dtype, copy=copy)
+
+    pipeline = RetrievalPipeline(lambda texts: ArrayLikeEmbeddings())
+    pipeline.index_documents(files[:1])
+    vector = pipeline.embed_query("cat")
+    assert vector.dtype == np.float64
+    np.testing.assert_array_equal(vector, [1, 0])
+    assert pipeline.search("cat")[0].chunk.filename == "cat.md"
+
+
 @pytest.mark.parametrize("query", ["", " \t", None])
 def test_empty_query(files, query):
     def no_embedding(_):

@@ -2,7 +2,7 @@
 
 import pytest
 
-from rag_lab import embeddings
+from rag_lab import embeddings, generation
 
 
 @pytest.fixture(autouse=True)
@@ -11,3 +11,4 @@ def no_model_downloads(monkeypatch):
         pytest.fail("Tests must replace the embedding model with a fake")
 
     monkeypatch.setattr(embeddings, "_load_model", fail)
+    monkeypatch.setattr(generation, "_load_model", lambda directory: fail())

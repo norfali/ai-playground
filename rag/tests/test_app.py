@@ -1,5 +1,10 @@
 """Callbacks, escaped content and session state, without running inference."""
 
+import asyncio
+
+import pytest
+from gradio.state_holder import SessionState
+
 from rag_lab import app
 from rag_lab.chunking import Chunk
 from rag_lab.pipeline import RetrievalPipeline
@@ -154,16 +159,115 @@ def test_workspace_components_and_invalidation_wiring():
     assert all('tabindex="0"' in panel.html_template for panel in panels)
     assert all('role="region"' in panel.html_template for panel in panels)
     callbacks = list(demo.fns.values())
-    clear_events = [fn for fn in callbacks if fn.fn is app.clear_search]
-    assert len(clear_events) == 1
+    clear_events = [fn for fn in callbacks if fn.fn is app.clear_query]
+    assert len(clear_events) == 4
     assert all(
-        [output.elem_id for output in fn.outputs[1:]]
+        [output.elem_id for output in fn.outputs[1:3]]
         == ["retrieved-passages", "retrieval-insights"]
         for fn in clear_events
     )
-    search_events = [fn for fn in callbacks if fn.fn is app.search_with_insights]
+    search_events = [fn for fn in callbacks if fn.fn is app.query_with_pipeline]
     assert len(search_events) == 2  # Search button and Enter in the query field.
     assert all(fn.concurrency_id == "retrieval" for fn in clear_events + search_events)
+    assert all(len(fn.inputs) == 5 for fn in search_events)
+    assert all(fn.js is None for fn in search_events)
+
+
+def test_repeated_searches_through_gradio_preserve_collection_and_settings(tmp_path):
+    path = tmp_path / "notes.txt"
+    path.write_text("Semantic search matches meaning. Keyword search matches words.")
+    pipeline = RetrievalPipeline(lambda texts: [[1, 0] for _ in texts])
+    pipeline.index_documents([path])
+    demo = app.build_app()
+    searches = [fn for fn in demo.fns.values() if fn.fn is app.query_with_pipeline]
+    clear = next(fn for fn in demo.fns.values() if fn.fn is app.clear_query)
+    state = SessionState(demo)
+    state[searches[0].inputs[0]._id] = pipeline
+
+    async def search_twice():
+        for handler, question in zip(
+            searches,
+            [
+                "How does semantic search differ from keyword search?",
+                "What is Australia's capital?",
+            ],
+            strict=True,
+        ):
+            # User edits clear previous outputs, then Search or Enter submits
+            # all five declared inputs. State is resolved by Gradio on the server.
+            await demo.process_api(clear, [None], state=state)
+            response = await demo.process_api(handler, [None, question, 5, False, ""], state=state)
+            assert "Retrieved 1 passages" in response["data"][0]
+            assert "Semantic search matches meaning" in response["data"][1]
+            assert response["data"][6].root["status"] == "retrieval_only"
+            assert state[handler.inputs[0]._id] is pipeline
+
+    asyncio.run(search_twice())
+
+
+def test_pipeline_callback_retrieval_and_failure_preserve_evidence(tmp_path):
+    path = tmp_path / "notes.txt"
+    path.write_text("A source passage with <script>markup</script>.")
+    pipeline = RetrievalPipeline(lambda texts: [[1, 0] for _ in texts])
+    pipeline.index_documents([path])
+    response = app.query_with_pipeline(pipeline, "question", 5, False, "/missing")
+    assert "generation skipped" in response[0]
+    assert response[3] == ""
+    assert "Included in context" in response[4]
+    assert "[S1] notes.txt" in response[5]
+    assert response[6]["durations"]["generation"] is None
+    failed = app.query_with_pipeline(pipeline, "question", 5, True, "/missing")
+    assert "unavailable" in failed[0]
+    assert "source passage" in failed[1]
+    assert failed[5] == response[5]
+    assert failed[6]["status"] == "generation_unavailable"
+    assert app.query_with_pipeline(None, "q", 5, False, "")[1:] == ("", "", "", "", "", {})
+    assert app.query_with_pipeline(pipeline, "", 5, False, "")[3:] == ("", "", "", {})
+    assert app.clear_query(pipeline)[3:] == ("", "", "", {})
+
+
+@pytest.mark.parametrize("generate_answer", [False, True])
+def test_unset_model_directory_preserves_retrieval(tmp_path, generate_answer):
+    path = tmp_path / "notes.txt"
+    path.write_text("Semantic search matches meaning. Keyword search matches words.")
+    pipeline = RetrievalPipeline(lambda texts: [[1, 0] for _ in texts])
+    pipeline.index_documents([path])
+    response = app.query_with_pipeline(
+        pipeline,
+        "What are the main differences between semantic search and keyword search, "
+        "and when would you choose one over the other?",
+        5,
+        generate_answer,
+        None,
+    )
+    assert "Semantic search matches meaning" in response[1]
+    assert response[3] == ""
+    assert "[S1] notes.txt" in response[5]
+    assert response[6]["durations"]["generation"] is None
+    if generate_answer:
+        assert "Choose an existing local model directory" in response[0]
+        assert response[6]["status"] == "generation_unavailable"
+    else:
+        assert response[6]["status"] == "retrieval_only"
+
+
+def test_answer_source_references_escape_filenames_and_distinguish_citations(tmp_path):
+    from dataclasses import replace
+
+    from rag_lab.pipeline import QueryPipeline
+
+    path = tmp_path / "<img src=x>.txt"
+    path.write_text("Source evidence.")
+    pipeline = RetrievalPipeline(lambda texts: [[1, 0] for _ in texts])
+    pipeline.index_documents([path])
+    response = QueryPipeline(pipeline).run("question")
+    response = replace(response, citations=("S1",), warnings=("Unknown [S9] <script>",))
+    sources = app.render_sources(response)
+    assert "<img" not in sources and "<script>" not in sources
+    assert "&lt;img" in sources and "&lt;script&gt;" in sources
+    assert "Cited by model" in sources
+    assert "doc-0001-chunk-0001" in sources
+    assert "Included in context" in app.render_sources(replace(response, citations=()))
 
 
 def test_github_header_links_to_verified_repository_directory():
