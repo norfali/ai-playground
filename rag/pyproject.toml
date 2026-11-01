@@ -25,6 +25,9 @@ dependencies = [
 [dependency-groups]
 dev = ["pytest>=8,<10"]
 
+[project.optional-dependencies]
+llm = ["mlx-lm>=0.30,<0.31; sys_platform == 'darwin' and platform_machine == 'arm64'"]
+
 [project.scripts]
 rag-lab = "rag_lab.cli:main"
 
