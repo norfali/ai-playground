@@ -15,6 +15,8 @@ Nothing too serious — just curiosity, code and a bit of trial and error! 😀
 
 A local speech recognition playground for Apple Silicon. Transcribe audio with Whisper, compare the output against an editable reference and explore transcription accuracy, word-level differences and performance.
 
+- [SpeechLab resources](./speech/RESOURCES.md) — Speech recognition and transcription.
+
 ### [RagLab](./rag/README.md)
 
 **A closer look at retrieval.**
@@ -22,6 +24,8 @@ A local speech recognition playground for Apple Silicon. Transcribe audio with W
 A local document retrieval playground. Experiment with chunking strategies, embeddings and semantic search, then use Retrieval Insights to understand the results and explore how different settings affect retrieval.
 
 RagLab currently focuses on retrieval rather than AI-generated answers.
+
+- [RagLab resources](./rag/RESOURCES.md) — Embeddings, retrieval and context selection.
 
 More to explore: agents, evals and whatever else catches my interest!
 

@@ -186,6 +186,10 @@ RagLab uses heuristics to suggest experiments, not to judge factual correctness.
 | **Token** | A unit of text processed by a model; not necessarily a whole word. |
 | **Truncation** | When text exceeds the model's input limit and some content is excluded from its embedding. |
 
+## Further reading
+
+See [RESOURCES.md](RESOURCES.md) for short descriptions and links to further reading on embeddings, retrieval and context selection.
+
 ## Development
 
 From the repository root:

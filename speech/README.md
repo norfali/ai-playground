@@ -72,6 +72,10 @@ SpeechLab also reports:
 
 These measurements describe the whole local run, not a pure inference benchmark. First runs and runs with a cached model can differ substantially.
 
+## Further reading
+
+See [RESOURCES.md](RESOURCES.md) for short descriptions and links to further reading on speech recognition and transcription.
+
 ## Development
 
 From the repository root:
