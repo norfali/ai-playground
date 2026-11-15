@@ -87,16 +87,18 @@ This installs runtime packages, **not model weights**. A later `make sync` omits
 uv run --package rag-lab --extra llm rag-lab
 ```
 
-A lightweight starting model is [`mlx-community/Qwen2.5-1.5B-Instruct-4bit`](https://huggingface.co/mlx-community/Qwen2.5-1.5B-Instruct-4bit), an Apache-2.0 instruction model converted to MLX format. It is a learning baseline, not a guarantee of answer quality.
+The recommended smoke-test baseline is [`mlx-community/Qwen3-4B-Instruct-2507-4bit`](https://huggingface.co/mlx-community/Qwen3-4B-Instruct-2507-4bit), a quantized instruction model in MLX format. It is a learning baseline, not a guarantee of answer quality.
 
-Download its files yourself, only when you want generation. For example, the Hugging Face CLI supplied by the dependencies can download to a directory outside the repository:
+RagLab does not automatically download LLM weights. Download them explicitly with the Hugging Face CLI through `uvx`, keeping them outside the repository:
 
 ```bash
-uv run --package rag-lab hf download mlx-community/Qwen2.5-1.5B-Instruct-4bit \
-    --local-dir /absolute/path/outside/repository/qwen2.5-1.5b-instruct-4bit
+uvx --from huggingface-hub hf download mlx-community/Qwen3-4B-Instruct-2507-4bit \
+    --local-dir "$HOME/models/qwen3-4b-instruct"
 ```
 
 That command explicitly downloads weights and requires network access. Skip it if you already have a complete compatible model directory. Keep the configuration, tokenizer files, chat template and safetensors weights together.
+
+If the Xet weight transfer stalls, retry the download command prefixed with `HF_HUB_DISABLE_XET=1` to use standard HTTP.
 
 In RagLab:
 
@@ -123,6 +125,75 @@ Retrieval timing excludes query embedding, which has its own measurement. Contex
 
 Editing the question, top-k, generation option or model directory clears previous query outputs. Indexing also clears answers, sources and diagnostics. Diagnostics stay in the local session/interface; no traces are sent to an external service or written to a tracing database.
 
+## Real-model smoke baseline
+
+After installing the optional runtime and downloading the model as described above, run the baseline from the repository root on Apple Silicon macOS. The default MiniLM embedding model must also be cached: the smoke test runs offline and downloads no weights.
+
+```bash
+make rag-smoke MODEL_DIR="$HOME/models/qwen3-4b-instruct"
+```
+
+The default report path is `rag/outputs/smoke-baseline-01.json`. Use a new filename for subsequent runs; existing reports are never overwritten:
+
+```bash
+make rag-smoke MODEL_DIR="$HOME/models/qwen3-4b-instruct" OUTPUT=rag/outputs/smoke-baseline-02.json
+```
+
+Quote paths containing spaces. Reports belong under the ignored `rag/outputs/` directory or outside the repository; do not commit local artifacts. The runner creates two temporary fictional documents, removes them after ingestion and records their text and hashes.
+
+The fixed scenarios are:
+
+| Scenario | Question focus | Human acceptance criteria |
+| --- | --- | --- |
+| Fully supported | Survey vessel and start date | Lark; 14 June 2031; citations supporting both facts. |
+| Partially supported | Coordinator and total budget | Mira Vale with a supporting citation; explicitly acknowledge that the budget is missing. |
+| Unsupported | Emergency satellite phone number | Acknowledge insufficient evidence; do not invent a number. The prompt requests the exact abstention sentence. |
+
+The test uses the normal ingestion, retrieval, context budgeting and greedy MLX generation APIs. Both documents fit in one chunk each; top-k is two, supplying the whole collection. Even the unsupported question receives nonempty related evidence and executes real inference. Expected answers are not passed to the model. This checks initial answer behaviour, not retrieval recall under realistic competition.
+
+The JSON separates `automated` observations from pending `human_review` fields. It records questions, answers, retrieved chunks and scores, exact context, citation-label checks, stage timings and full prompt token counts. Output tokens are **estimated by re-encoding the stripped answer**, excluding EOS and discarded whitespace. Ingestion includes the first embedding-model load; the first query includes LLM loading, while later queries reuse the cache. Timings exclude report serialization and output-token estimation. There is no warm-up, so these observations are not a performance benchmark.
+
+Review each claim against the assembled context and its cited passage. Record factual support, citation accuracy, missing-information handling and acceptance criteria in the human review fields or a separate reviewed copy. **Valid citation labels do not establish grounding.** A partial answer that abstains completely may avoid hallucination while failing the usefulness criterion.
+
+Exit code zero means all inference calls completed, including abstentions; it does **not** mean answer quality passed. On failure, inspect the top-level or per-scenario `error`, status and message; generation failures retain retrieved evidence. Check answer completeness manually because the 512-token limit can truncate outputs. Preserve failed reports with review notes. For reproducibility, record code/model revisions and machine memory alongside the captured platform, package versions, configuration hash and weight-file sizes/mtimes. These metadata do not prove weight identity.
+
+Repeat with the same code, weights and runtime before comparing changes; greedy decoding does not guarantee identical outputs across platforms or versions. Next, expand to labelled retrieval cases and reviewed claim/citation cases with distractors and context-budget pressure. Three easy cases cannot establish general retrieval or answer quality.
+
+## Retrieval evaluation
+
+Run the fictional retrieval baseline from the repository root after `make sync`. The default `all-MiniLM-L6-v2` embedding model must already be cached (normal RagLab indexing downloads it on first use). Evaluation runs offline using the existing ingestion and exact cosine search pipeline, without loading an LLM or generating answers.
+
+```bash
+make rag-eval
+make rag-eval TOP_K=10 OUTPUT=rag/outputs/retrieval-baseline-02.json
+```
+
+The default report is `rag/outputs/retrieval-baseline-01.json`. Existing reports are never overwritten; choose a new output filename for each run. Reports under `rag/outputs/` are already Git-ignored. Exit code zero means the run completed, not that retrieval met a quality threshold. Failed/skipped questions and metric denominators are explicit in the JSON.
+
+The [versioned dataset](evaluation/README.md) contains 18 short fictional documents, 23 supported questions and three explicitly unsupported questions. It tests overlapping subjects, exact identifiers, names and dates, and distractors using similar language. Five questions require two distinct sources; each source must be retrieved for full recall. Stable document IDs and verbatim annotation quotes preserve the ground truth when chunking changes.
+
+Metrics use **document relevance at raw chunk ranks**, averaged equally over successfully executed supported questions:
+
+| Metric | Interpretation |
+| --- | --- |
+| Hit Rate@K | Fraction of questions with at least one relevant document in the first K chunks. |
+| Recall@K | Mean fraction of expected document IDs found in the first K chunks. Repeated chunks from a source earn credit once. |
+| MRR@K | Mean reciprocal rank of the first relevant chunk; zero if there is no hit within K. This is truncated MRR, not an unbounded full-ranking MRR. |
+
+The runner reports K=1, 3 and 5 up to `TOP_K`, plus `TOP_K` itself. It never silently retrieves extra results to compute a larger cutoff. Unsupported questions are listed separately, with ranked results and `null` relevance judgements/metrics; they do not count as ordinary misses. Their similarity scores are not calibrated probabilities and do not establish evidence or abstention.
+
+For chunking experiments, use the module directly:
+
+```bash
+uv run --offline --no-sync --package rag-lab python -m rag_lab.evaluation \
+    --chunk-size 300 --overlap 40 --strategy "Sentence-aware" \
+    --output rag/outputs/retrieval-sentence-01.json
+```
+
+Use `--dataset path/to/dataset.json` for another dataset in the same format. Reports include schema version, UTC timestamp, package/platform versions, dataset and configuration fingerprints, per-source hashes, settings, counts, token diagnostics, stage timings, ranked passage text/offsets/scores and document relevance judgements. Compare reports with the same dataset fingerprint and record the code revision alongside them. The model name identifies the requested model but does not fingerprint cached weights; library or weight changes can affect rankings. Initial model loading is included in ingestion timing.
+
+**Document hits do not establish chunk-level relevance.** Annotation quotes are validated but not scored. After changing chunk sizes, a passage can earn a source hit while omitting the needed fact. The initial 800-character configuration produces 18 chunks with no token truncation, so it does not exercise long-document fragmentation. See [NOTES.md](NOTES.md) for the measured baseline and its weak cases.
+
 ## Exploring chunking
 
 Chunking divides a document into smaller passages before generating embeddings. The strategy, size and overlap affect what information can be retrieved together.
@@ -142,7 +213,7 @@ Try indexing the same document with different settings:
 | Sentence-aware | 800 | 120 | More natural boundaries and context |
 | Sentence-aware | 2,000 | 120 | Longer passages and possible token truncation |
 
-Repeat the same search after each indexing operation and compare the retrieved passages. RagLab does not yet save or compare experiments automatically.
+Repeat the same search after each indexing operation and compare the retrieved passages. The retrieval evaluation CLI can save measurements for the labelled fictional dataset; interface experiments are not saved automatically.
 
 ## Retrieval Insights
 
@@ -188,6 +259,8 @@ RagLab uses heuristics to suggest experiments, not to judge factual correctness.
 
 ## Further reading
 
+See [NOTES.md](NOTES.md) for engineering notes, experiment observations and ideas to explore next.
+
 See [RESOURCES.md](RESOURCES.md) for short descriptions and links to further reading on embeddings, retrieval and context selection.
 
 ## Development
@@ -198,6 +271,8 @@ From the repository root:
 make sync       # Install workspace dependencies
 make rag        # Launch RagLab
 make rag-test   # Run RagLab tests
+make rag-eval   # Evaluate retrieval offline with cached embeddings
+make rag-smoke MODEL_DIR=/path/to/model  # Run the offline real-model smoke test
 make lint       # Check Python linting and formatting
 make format     # Format Python code
 ```
@@ -222,7 +297,7 @@ Generated answers can hallucinate, follow malicious instructions embedded in sou
 
 Generation currently supports local MLX instruction models with a chat template and a declared context limit. The 4,096-token application cap and whole-chunk packing can omit useful evidence, including a top-ranked chunk that cannot fit. Generation is non-streaming and uses greedy decoding, which does not guarantee identical results across runtime/hardware versions. Real inference quality and performance require a manual check on Apple Silicon with your chosen weights; automated tests mock inference.
 
-There is no claim verification, retrieval evaluation, reranking, persistent query history or external tracing. Possible later experiments include retrieval benchmarks, reranking, streaming answers and explicit workflow comparisons, without adding them to this phase.
+There is no claim verification, reranking, persistent query history or external tracing. Retrieval evaluation currently measures document-level relevance on a small fictional collection. Possible later experiments include passage-level benchmarks, reranking, streaming answers and explicit workflow comparisons.
 
 ## Disclaimer
 
