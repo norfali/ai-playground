@@ -1,0 +1,386 @@
+{
+  "id": "raglab-fictional-retrieval",
+  "version": 1,
+  "documents": [
+    {
+      "id": "harbour-survey",
+      "path": "documents/harbour-survey.md"
+    },
+    {
+      "id": "harbour-samples",
+      "path": "documents/harbour-samples.md"
+    },
+    {
+      "id": "harbour-permit",
+      "path": "documents/harbour-permit.md"
+    },
+    {
+      "id": "reservoir-survey",
+      "path": "documents/reservoir-survey.md"
+    },
+    {
+      "id": "lark-theatre",
+      "path": "documents/lark-theatre.md"
+    },
+    {
+      "id": "orchard-relay",
+      "path": "documents/orchard-relay.md"
+    },
+    {
+      "id": "orchard-orders",
+      "path": "documents/orchard-orders.md"
+    },
+    {
+      "id": "relay-drill",
+      "path": "documents/relay-drill.md"
+    },
+    {
+      "id": "archive-move",
+      "path": "documents/archive-move.md"
+    },
+    {
+      "id": "archive-storage",
+      "path": "documents/archive-storage.md"
+    },
+    {
+      "id": "photo-storage",
+      "path": "documents/photo-storage.md"
+    },
+    {
+      "id": "cinder-game",
+      "path": "documents/cinder-game.md"
+    },
+    {
+      "id": "clinic-power",
+      "path": "documents/clinic-power.md"
+    },
+    {
+      "id": "clinic-delivery",
+      "path": "documents/clinic-delivery.md"
+    },
+    {
+      "id": "aster-garden",
+      "path": "documents/aster-garden.md"
+    },
+    {
+      "id": "bridge-closure",
+      "path": "documents/bridge-closure.md"
+    },
+    {
+      "id": "bridge-network",
+      "path": "documents/bridge-network.md"
+    },
+    {
+      "id": "lantern-ferry",
+      "path": "documents/lantern-ferry.md"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q01",
+      "question": "Which vessel carries the Brindle Harbour survey and on what date does it begin?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "harbour-survey",
+          "quote": "begins on 14 June 2031 aboard the vessel Lark"
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "question": "Who coordinates project BH-731?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "harbour-survey",
+          "quote": "Mira Vale coordinates the survey"
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "question": "What bottles and collection day does the Brindle Harbour water survey use?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "harbour-samples",
+          "quote": "water samples are collected at North Pier every Tuesday. Use amber glass bottles"
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "question": "Which laboratory receives BH-731 samples, and how soon must they arrive?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "harbour-samples",
+          "quote": "send them to the Saltglass Laboratory. Deliver samples within six hours"
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "question": "What is the Brindle Harbour pier permit number and when does it expire?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "harbour-permit",
+          "quote": "Permit BP-418"
+        },
+        {
+          "document_id": "harbour-permit",
+          "quote": "expires on 30 September 2031"
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "question": "When does the harbour survey begin and when does its access permit expire?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "harbour-survey",
+          "quote": "begins on 14 June 2031"
+        },
+        {
+          "document_id": "harbour-permit",
+          "quote": "expires on 30 September 2031"
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "question": "Name the vessel and sample bottle material for the Brindle Reservoir inspection.",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "reservoir-survey",
+          "quote": "using the launch Finch"
+        },
+        {
+          "document_id": "reservoir-survey",
+          "quote": "clear polymer bottles"
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "question": "Who directs the reopening production at Lark Theatre?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "lark-theatre",
+          "quote": "director Senna Orr"
+        }
+      ]
+    },
+    {
+      "id": "q09",
+      "question": "Which firmware version was approved for the Vesper Farm soil telemetry relay?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "orchard-relay",
+          "quote": "Firmware OR-9.4"
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "question": "How do I restart the Orchard soil sensor relay?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "orchard-relay",
+          "quote": "holding the square button for eight seconds"
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "question": "Which radio channel does the Orchard telemetry relay use?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "orchard-relay",
+          "quote": "The radio channel is 17"
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "question": "Who approved the Orchard bakery order service release on 3 March 2032?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "orchard-orders",
+          "quote": "approved by Niko Quill"
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "question": "Give the approved version numbers for both the farm telemetry firmware and the bakery order release.",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "orchard-relay",
+          "quote": "Firmware OR-9.4"
+        },
+        {
+          "document_id": "orchard-orders",
+          "quote": "release OR-9.3"
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "question": "On what date and to which building does Cinder move its original maps?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "archive-move",
+          "quote": "to the West Annex on 8 October 2030"
+        }
+      ]
+    },
+    {
+      "id": "q15",
+      "question": "What temperature and humidity are required for original maps at the West Annex?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "archive-storage",
+          "quote": "18 degrees Celsius and 45 percent relative humidity"
+        }
+      ]
+    },
+    {
+      "id": "q16",
+      "question": "When are Cinder maps moved and how long must the blue crates acclimatise?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "archive-move",
+          "quote": "8 October 2030"
+        },
+        {
+          "document_id": "archive-storage",
+          "quote": "twelve-hour acclimatisation period"
+        }
+      ]
+    },
+    {
+      "id": "q17",
+      "question": "Where are Cinder photographic negatives stored and at what temperature?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "photo-storage",
+          "quote": "East Vault at 8 degrees Celsius"
+        }
+      ]
+    },
+    {
+      "id": "q18",
+      "question": "What is the model and serial number of the Morrow Clinic building backup battery?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "clinic-power",
+          "quote": "model Aster B12, serial AB-1207"
+        }
+      ]
+    },
+    {
+      "id": "q19",
+      "question": "How many hours can the clinic backup battery supply the vaccine refrigerator?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "clinic-power",
+          "quote": "for six hours"
+        }
+      ]
+    },
+    {
+      "id": "q20",
+      "question": "Who receives Morrow vaccine deliveries and what day do they arrive?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "clinic-delivery",
+          "quote": "arrive on Wednesdays"
+        },
+        {
+          "document_id": "clinic-delivery",
+          "quote": "Sela Venn receives them"
+        }
+      ]
+    },
+    {
+      "id": "q21",
+      "question": "Compare battery reserve hours for the Morrow Clinic building and delivery vehicle.",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "clinic-power",
+          "quote": "for six hours"
+        },
+        {
+          "document_id": "clinic-delivery",
+          "quote": "four-hour battery reserve"
+        }
+      ]
+    },
+    {
+      "id": "q22",
+      "question": "Which contractor repairs the Juniper footbridge and what is the works order?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "bridge-closure",
+          "quote": "Works order JF-602 names contractor Moss & Coil"
+        }
+      ]
+    },
+    {
+      "id": "q23",
+      "question": "What walking diversion and weekday ferry hours apply during the footbridge repairs?",
+      "unsupported": false,
+      "evidence": [
+        {
+          "document_id": "bridge-closure",
+          "quote": "diversion follows Lantern Lane"
+        },
+        {
+          "document_id": "lantern-ferry",
+          "quote": "07:00 to 10:00 on weekdays only"
+        }
+      ]
+    },
+    {
+      "id": "q24",
+      "question": "What is the total budget of the Brindle Harbour survey?",
+      "unsupported": true,
+      "evidence": [],
+      "reason": "No survey budget appears in the collection."
+    },
+    {
+      "id": "q25",
+      "question": "What is the emergency telephone number for the Juniper footbridge works?",
+      "unsupported": true,
+      "evidence": [],
+      "reason": "The closure notice explicitly publishes no emergency phone number."
+    },
+    {
+      "id": "q26",
+      "question": "What encryption key secures the Orchard soil sensor radio packets?",
+      "unsupported": true,
+      "evidence": [],
+      "reason": "The relay specification gives channel and timing but no encryption key."
+    }
+  ]
+}
